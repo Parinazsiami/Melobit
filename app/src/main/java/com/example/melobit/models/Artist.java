@@ -2,7 +2,7 @@ package com.example.melobit.models;
 
 import com.google.gson.annotations.SerializedName;
 
-public class ArtistsItem{
+public class Artist {
 
 	@SerializedName("image")
 	private Image image;

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import com.example.melobit.models.ArtistResponse;
 import com.example.melobit.models.SongsListResponse;
 
 import retrofit2.Call;
@@ -25,6 +26,15 @@ public class RequestManager {
     interface CallService {
         @GET("song/new/0/11")
         Call<SongsListResponse> getNewSongs();
+
+        @GET("artist/trending/0/4")
+        Call<ArtistResponse> getTopSingers();
+
+        @GET("song/top/day/0/100")
+        Call<SongsListResponse> getHitsToday();
+
+        @GET("song/top/week/0/100")
+        Call<SongsListResponse> getHitsThisWeek();
     }
 
     CallService callService = retrofit.create(CallService.class);
@@ -42,7 +52,64 @@ public class RequestManager {
                     listener.didError(response.message());
                     return;
                 }
-                listener.didFetch(response.body(),response.message());
+                listener.didFetch(response.body(), response.message());
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<SongsListResponse> call, @NonNull Throwable t) {
+                listener.didError(t.getMessage());
+            }
+        });
+    }
+
+    public void getTopSingers(ArtistsRequestListener listener) {
+        Call<ArtistResponse> topSingers = callService.getTopSingers();
+        topSingers.enqueue(new Callback<ArtistResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<ArtistResponse> call, @NonNull Response<ArtistResponse> response) {
+                if (!response.isSuccessful()) {
+                    listener.didError(response.message());
+                    return;
+                }
+                listener.didFetch(response.body());
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ArtistResponse> call, @NonNull Throwable t) {
+                listener.didError(t.getMessage());
+            }
+        });
+    }
+
+    public void getHitsToday(SongsListResponseListener listener) {
+        Call<SongsListResponse> todayHits = callService.getHitsToday();
+        todayHits.enqueue(new Callback<SongsListResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<SongsListResponse> call, @NonNull Response<SongsListResponse> response) {
+                if (!response.isSuccessful()) {
+                    listener.didError(response.message());
+                    return;
+                }
+                listener.didFetch(response.body(), response.message());
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<SongsListResponse> call, @NonNull Throwable t) {
+                listener.didError(t.getMessage());
+            }
+        });
+    }
+
+    public void getHitsThisWeek(SongsListResponseListener listener) {
+        Call<SongsListResponse> thisWeekHits = callService.getHitsThisWeek();
+        thisWeekHits.enqueue(new Callback<SongsListResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<SongsListResponse> call, @NonNull Response<SongsListResponse> response) {
+                if (!response.isSuccessful()) {
+                    listener.didError(response.message());
+                    return;
+                }
+                listener.didFetch(response.body(), response.message());
             }
 
             @Override
@@ -54,6 +121,13 @@ public class RequestManager {
 }
 
 interface SongsListResponseListener {
-    void didFetch(SongsListResponse response , String status);
+    void didFetch(SongsListResponse response, String status);
+
     void didError(String status);
+}
+
+interface ArtistsRequestListener {
+    void didFetch(ArtistResponse response);
+
+    void didError(String errorMessage);
 }

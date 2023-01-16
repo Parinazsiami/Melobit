@@ -18,7 +18,7 @@ public class Song {
 	private Image image;
 
 	@SerializedName("artists")
-	private List<ArtistsItem> artists;
+	private List<Artist> artists;
 
 	@SerializedName("releaseDate")
 	private String releaseDate;
@@ -57,7 +57,7 @@ public class Song {
 		return image;
 	}
 
-	public List<ArtistsItem> getArtists(){
+	public List<Artist> getArtists(){
 		return artists;
 	}
 
