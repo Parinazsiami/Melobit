@@ -41,6 +41,9 @@ public class Song {
 	@SerializedName("downloadCount")
 	private String downloadCount;
 
+	@SerializedName("lyrics")
+	private String lyrics;
+
 	public int getDuration(){
 		return duration;
 	}
@@ -87,5 +90,9 @@ public class Song {
 
 	public String getDownloadCount(){
 		return downloadCount;
+	}
+
+	public String getLyrics(){
+		return lyrics;
 	}
 }
