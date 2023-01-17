@@ -16,7 +16,8 @@ import java.io.IOException;
 
 public class SongActivity extends AppCompatActivity {
 
-    private TextView textViewError, textViewSongName, textViewSinger, textViewDownloadCount, textViewReleaseDate, textViewLyrics;
+    private TextView textViewError, textViewSongName, textViewSinger, textViewDownloadCount,
+            textViewReleaseDate, textViewLyrics,textView7,textView6,textView5;
     private ImageView imageViewCover, imageViewPlay;
     MediaPlayer mediaPlayer;
 
@@ -25,6 +26,9 @@ public class SongActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_song);
 
+        textView7 = findViewById(R.id.textView7);
+        textView6 = findViewById(R.id.textView6);
+        textView5 = findViewById(R.id.textView5);
         textViewError = findViewById(R.id.textView1);
         textViewSongName = findViewById(R.id.text_view_song_name);
         textViewSinger = findViewById(R.id.text_view_singer_name);
@@ -40,11 +44,17 @@ public class SongActivity extends AppCompatActivity {
         SongListener listener = new SongListener() {
             @Override
             public void didFetch(Song response, String status) {
+                textView7.setVisibility(View.VISIBLE);
+                textView6.setVisibility(View.VISIBLE);
                 textViewSongName.setText(response.getTitle());
                 textViewSinger.setText(response.getArtists().get(0).getFullName());
                 textViewDownloadCount.setText(response.getDownloadCount());
                 textViewReleaseDate.setText(response.getReleaseDate().split("T")[0]);
-                textViewLyrics.setText(response.getLyrics());
+                String lyrics = response.getLyrics();
+                if (!lyrics.isEmpty()){
+                    textView5.setVisibility(View.VISIBLE);
+                    textViewLyrics.setText(lyrics);
+                }
                 Picasso.get()
                         .load(response.getImage().getCover().getUrl())
                         .into(imageViewCover);
