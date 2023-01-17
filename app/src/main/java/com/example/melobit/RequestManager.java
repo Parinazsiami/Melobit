@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import com.example.melobit.models.ArtistResponse;
+import com.example.melobit.models.Song;
 import com.example.melobit.models.SongsListResponse;
 
 import retrofit2.Call;
@@ -13,6 +14,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 
 public class RequestManager {
 
@@ -35,6 +37,9 @@ public class RequestManager {
 
         @GET("song/top/week/0/100")
         Call<SongsListResponse> getHitsThisWeek();
+
+        @GET("song/{id}")
+        Call<Song> getSong(@Path("id") String songId);
     }
 
     CallService callService = retrofit.create(CallService.class);
@@ -118,6 +123,24 @@ public class RequestManager {
             }
         });
     }
+    public void getSong(SongListener listener, String id) {
+        Call<Song> song = callService.getSong(id);
+        song.enqueue(new Callback<Song>() {
+            @Override
+            public void onResponse(@NonNull Call<Song> call, @NonNull Response<Song> response) {
+                if (!response.isSuccessful()) {
+                    listener.didError(response.message());
+                    return;
+                }
+                listener.didFetch(response.body(),response.message());
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Song> call, @NonNull Throwable t) {
+                listener.didError(t.getMessage());
+            }
+        });
+    }
 }
 
 interface SongsListResponseListener {
@@ -130,4 +153,9 @@ interface ArtistsRequestListener {
     void didFetch(ArtistResponse response);
 
     void didError(String errorMessage);
+}
+interface SongListener {
+    void didFetch(Song response, String status);
+
+    void didError(String status);
 }
