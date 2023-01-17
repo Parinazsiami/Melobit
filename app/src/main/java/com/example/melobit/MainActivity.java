@@ -1,5 +1,6 @@
 package com.example.melobit;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -42,7 +43,9 @@ public class MainActivity extends AppCompatActivity {
                         new SongAdapter.ClickListener() {
                             @Override
                             public void onSongClick(int position, View v, String id) {
-                                //todo
+                                Intent intent = new Intent(MainActivity.this, SongActivity.class);
+                                intent.putExtra("song_id", id);
+                                startActivity(intent);
                             }
                         }));
             }
@@ -70,7 +73,9 @@ public class MainActivity extends AppCompatActivity {
                         new SongAdapter.ClickListener() {
                             @Override
                             public void onSongClick(int position, View v, String id) {
-                                //todo
+                                Intent intent = new Intent(MainActivity.this, SongActivity.class);
+                                intent.putExtra("song_id", id);
+                                startActivity(intent);
                             }
                         }));
             }
@@ -87,7 +92,9 @@ public class MainActivity extends AppCompatActivity {
                         new SongAdapter.ClickListener() {
                             @Override
                             public void onSongClick(int position, View v, String id) {
-                                //todo
+                                Intent intent = new Intent(MainActivity.this, SongActivity.class);
+                                intent.putExtra("song_id", id);
+                                startActivity(intent);
                             }
                         }));
             }
