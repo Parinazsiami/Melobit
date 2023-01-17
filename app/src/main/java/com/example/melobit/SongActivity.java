@@ -46,6 +46,7 @@ public class SongActivity extends AppCompatActivity {
             public void didFetch(Song response, String status) {
                 textView7.setVisibility(View.VISIBLE);
                 textView6.setVisibility(View.VISIBLE);
+                imageViewPlay.setVisibility(View.VISIBLE);
                 textViewSongName.setText(response.getTitle());
                 textViewSinger.setText(response.getArtists().get(0).getFullName());
                 textViewDownloadCount.setText(response.getDownloadCount());
