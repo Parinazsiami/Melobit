@@ -1,10 +1,13 @@
 package com.example.melobit;
 
+import android.annotation.SuppressLint;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +16,8 @@ import com.example.melobit.models.Song;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class SongActivity extends AppCompatActivity {
 
@@ -20,7 +25,9 @@ public class SongActivity extends AppCompatActivity {
             textViewReleaseDate, textViewLyrics,textView7,textView6,textView5;
     private ImageView imageViewCover, imageViewPlay;
     MediaPlayer mediaPlayer;
+    SeekBar seekBar;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +44,7 @@ public class SongActivity extends AppCompatActivity {
         textViewLyrics = findViewById(R.id.textView_lyrics);
         imageViewCover = findViewById(R.id.image_view_song_cover);
         imageViewPlay = findViewById(R.id.btn_play);
+        seekBar = findViewById(R.id.seekBar);
 
         Bundle extras = getIntent().getExtras();
         String id = extras.getString("song_id");
@@ -68,25 +76,6 @@ public class SongActivity extends AppCompatActivity {
             }
         };
         manager.getSong(listener, id);
-
-    }
-
-    private void playSong(String url) {
-        mediaPlayer = new MediaPlayer();
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        try {
-            mediaPlayer.setDataSource(url);
-            mediaPlayer.prepare();
-            mediaPlayer.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                imageViewPlay.setImageResource(R.drawable.ic_baseline_play_circle_24);
-            }
-        });
         imageViewPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -99,6 +88,41 @@ public class SongActivity extends AppCompatActivity {
                 }
             }
         });
+        seekBar.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return true;
+            }
+        });
+    }
+
+    private void playSong(String url) {
+        mediaPlayer = new MediaPlayer();
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        try {
+            mediaPlayer.setDataSource(url);
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+            seekBar.setMax(mediaPlayer.getDuration()/1000);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                imageViewPlay.setImageResource(R.drawable.ic_baseline_play_circle_24);
+            }
+        });
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    seekBar.setProgress(mediaPlayer.getCurrentPosition()/1000);
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }}, 0, 1000);
     }
     @Override
     public void onBackPressed() {
