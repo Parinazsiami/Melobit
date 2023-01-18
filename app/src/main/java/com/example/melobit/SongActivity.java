@@ -55,6 +55,7 @@ public class SongActivity extends AppCompatActivity {
                 textView7.setVisibility(View.VISIBLE);
                 textView6.setVisibility(View.VISIBLE);
                 imageViewPlay.setVisibility(View.VISIBLE);
+                seekBar.setVisibility(View.VISIBLE);
                 textViewSongName.setText(response.getTitle());
                 textViewSinger.setText(response.getArtists().get(0).getFullName());
                 textViewDownloadCount.setText(response.getDownloadCount());
